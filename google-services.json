@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "347500732404",
+    "project_id": "sigmacoders-f20f2",
+    "storage_bucket": "sigmacoders-f20f2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:347500732404:android:76b63ad9992bc2e02da3a1",
+        "android_client_info": {
+          "package_name": "sigma.coders.firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "347500732404-juj93gddkj1tkshctequhg3g8kp3l4kb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "sigma.coders.firebase",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "347500732404-ktp930op8kdccn8usibbej9deetngos7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxJD_zVp7AxxpMMMP0mvl8l6Tmr8xJV8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "347500732404-ktp930op8kdccn8usibbej9deetngos7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "347500732404-rh00tmgjirbn7air6dja8957tud1ch6g.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "sigma.coders.firebase"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
