@@ -1,6 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-
+import MapView, { Marker } from 'react-native-maps';
 
 export default function MapScreen() {
   const markers = [
@@ -31,7 +30,7 @@ export default function MapScreen() {
     <View style={styles.container}>
       <MapView
         style={styles.map}
-        provider={PROVIDER_GOOGLE}
+        provider="google"
         initialRegion={{
           latitude: 1.2976,
           longitude: 103.7767,
