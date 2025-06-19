@@ -20,7 +20,12 @@
       },
       "edgeToEdgeEnabled": true,
       "googleServicesFile": "./google-services.json",
-      "package": "sigma.coders.firebase"
+      "package": "sigma.coders.firebase",
+      "config": {
+    "googleMaps": {
+      "apiKey": "YOUR_API_KEY"
+    }
+  }
     },
     "web": {
       "bundler": "metro",

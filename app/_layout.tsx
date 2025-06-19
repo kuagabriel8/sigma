@@ -1,6 +1,6 @@
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { Stack, useRouter, useSegments } from "expo-router";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 
 export default function RootLayout() {
@@ -48,7 +48,7 @@ export default function RootLayout() {
   return (
      <Stack>
       <Stack.Screen
-        name="index"
+        name="Map"
       />
       <Stack.Screen
         name="(auth)"
