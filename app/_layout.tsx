@@ -48,7 +48,7 @@ export default function RootLayout() {
   return (
      <Stack>
       <Stack.Screen
-        name="Map"
+        name="Index"
       />
       <Stack.Screen
         name="(auth)"

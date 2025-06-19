@@ -31,7 +31,7 @@ export default function MapScreen() {
     <View style={styles.container}>
       <MapView
         style={styles.map}
-        provider={PROVIDER_GOOGLE}  // you can also explicitly set it here
+        provider={PROVIDER_GOOGLE}
         initialRegion={{
           latitude: 1.2976,
           longitude: 103.7767,
