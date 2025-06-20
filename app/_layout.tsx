@@ -24,20 +24,12 @@ export default function RootLayout() {
     if (initializing) return;
 
     const inAuthGroup = segments[0] === "(auth)";
-    // Temporarily bypass authentication due to sign-up issues
-    if (!inAuthGroup) {
-      router.navigate("/(auth)/home");
-    }
-    // Original logic commented out for testing
-    /*
     if (user && !inAuthGroup) {
       router.navigate("/(auth)/home");
     } else if (!user && inAuthGroup) {
       router.replace("/");
     }
-    */
   }, [user, initializing]);
-  
 
   if (initializing) 
     return (

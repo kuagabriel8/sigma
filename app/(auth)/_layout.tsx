@@ -49,6 +49,15 @@ const Layout = () => {
                     ),
                 }}
             />
+            <Tabs.Screen
+            name = "Timetable"
+            options = {{ 
+                title: 'Timetable',
+                tabBarIcon: ({ color, size }) => (
+                <Ionicons name="calendar-number-outline" color={color} size = {size} />
+            )
+            }}
+            />
         </Tabs>
     );
 };
