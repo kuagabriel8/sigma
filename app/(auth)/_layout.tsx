@@ -23,7 +23,7 @@ const Layout = () => {
                 }}
             />
             <Tabs.Screen
-                name="friends"
+                name="friends/index"
                 options={{
                     title: 'Friends',
                     tabBarIcon: ({ color, size }) => (

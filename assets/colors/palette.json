@@ -1,0 +1,25 @@
+{
+  "colors": {
+    "azure": {
+      "hex": "#00809D",
+      "rgb": [0, 128, 157]
+    },
+    "lightOrange": {
+      "hex": "#FCECDD",
+      "rgb": [252, 236, 221]
+    },
+    "darkOrange": {
+      "hex": "#FF7601",
+      "rgb": [255, 118, 1]
+    },
+    "orange": {
+      "hex": "#F3A26D",
+      "rgb": [243, 162, 109]
+    }
+  },
+  "metadata": {
+    "created": "2023-11-15",
+    "version": "1.0",
+    "author": "gabby"
+  }
+}

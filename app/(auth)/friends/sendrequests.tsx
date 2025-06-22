@@ -1,12 +1,12 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 
-const Friends = () => {
+const SendRequestsScreen = () => {
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Friends Page</Text>
+            <Text>srs Paage</Text>
         </View>
     );
 };
 
-export default Friends;
+export default SendRequestsScreen;

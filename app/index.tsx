@@ -1,7 +1,9 @@
 import auth from "@react-native-firebase/auth";
+import firestore from '@react-native-firebase/firestore';
 import { useRouter } from "expo-router";
 import { FirebaseError } from "firebase/app";
 import React, { useState } from "react";
+
 import {
   ActivityIndicator,
   Button,
@@ -22,8 +24,20 @@ export default function Index() {
   const signUp = async () => {
     setLoading(true);
     try {
-      await auth().createUserWithEmailAndPassword(email, password);
+      const user = await auth().createUserWithEmailAndPassword(email, password);
       alert("User account created & signed in!");
+
+      await firestore()
+      .collection('users')
+      .doc(user.user.uid)
+      .set({
+        userId: user.user.uid,
+        email: email,
+        username: email.split('@')[0], // Default username from email
+        profileImage: '', // Default empty or placeholder image
+        createdAt: firestore.FieldValue.serverTimestamp()
+      });
+
     } catch (e: any) {
       const err = e as FirebaseError;
       alert("Registration failed: " + err.message);
