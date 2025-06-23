@@ -23,20 +23,29 @@ const Layout = () => {
                 }}
             />
             <Tabs.Screen
-                name="friends/index"
+                name="friends/friends"
                 options={{
                     title: 'Friends',
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="people-outline" color={color} size={size} />
+                        <Ionicons name="chatbubbles-outline" color={color} size={size} />
                     ),
                 }}
             />
             <Tabs.Screen
-                name="studySession"
+                name="StudySession"
                 options={{
                     title: 'Study Session',
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="book-outline" color={color} size={size} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="timetable"
+                options={{
+                    title: 'Timetable',
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="calendar-outline" color={color} size={size} />
                     ),
                 }}
             />
@@ -48,15 +57,6 @@ const Layout = () => {
                         <Ionicons name="settings-outline" color={color} size={size} />
                     ),
                 }}
-            />
-            <Tabs.Screen
-            name = "Timetable"
-            options = {{ 
-                title: 'Timetable',
-                tabBarIcon: ({ color, size }) => (
-                <Ionicons name="calendar-number-outline" color={color} size = {size} />
-            )
-            }}
             />
         </Tabs>
     );
