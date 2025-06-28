@@ -22,10 +22,10 @@
       "googleServicesFile": "./google-services.json",
       "package": "sigma.coders.firebase",
       "config": {
-    "googleMaps": {
-      "apiKey": "AIzaSyCi7xDPkxjwkGMs0v_0PkvFXNd4tsWxENc"
-    }
-  }
+        "googleMaps": {
+          "apiKey": "AIzaSyCi7xDPkxjwkGMs0v_0PkvFXNd4tsWxENc"
+        }
+      }
     },
     "web": {
       "bundler": "metro",
@@ -33,13 +33,12 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-     
       [
         "expo-build-properties",
         {
           "ios": {
             "useFrameworks": "static"
-          }  
+          }
         }
       ],
       "expo-router",
@@ -53,7 +52,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true

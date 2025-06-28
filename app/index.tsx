@@ -1,4 +1,4 @@
-import auth from "@react-native-firebase/auth";
+import auth , {getAuth} from "@react-native-firebase/auth";
 import firestore from '@react-native-firebase/firestore';
 import { useRouter } from "expo-router";
 import { FirebaseError } from "firebase/app";
@@ -25,19 +25,33 @@ export default function Index() {
     setLoading(true);
     try {
       const user = await auth().createUserWithEmailAndPassword(email, password);
-      alert("User account created & signed in!");
+      console.log('Auth success, UID:', user.user.uid); // Verify UID exists
+      console.log('Preparing Firestore data...'); // 3
 
-      await firestore()
+    const userData = {
+      userId: user.user.uid,
+      email: email,
+      username: email.split('@')[0],
+      profileImage: '',
+      createdAt: firestore.FieldValue.serverTimestamp()
+    };
+    console.log('User data prepared:', userData); // 4
+    
+    console.log(
+      'Firestore check:',
+     // Should exist
+      typeof firestore().collection, // Should be "function"
+      firestore().app.name // Should show "[DEFAULT]"
+    );
+
+    console.log('Attempting Firestore write...'); // 5
+    await firestore()
       .collection('users')
       .doc(user.user.uid)
-      .set({
-        userId: user.user.uid,
-        email: email,
-        username: email.split('@')[0], // Default username from email
-        profileImage: '', // Default empty or placeholder image
-        createdAt: firestore.FieldValue.serverTimestamp()
-      });
-
+      .set(userData);
+    
+    console.log('Firestore write completed successfully!'); // 6
+    alert("User account created & signed in!"); 
     } catch (e: any) {
       const err = e as FirebaseError;
       alert("Registration failed: " + err.message);
