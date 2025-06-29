@@ -1,11 +1,17 @@
-import firestore from '@react-native-firebase/firestore';
-import React from 'react';
+import { getAuth } from '@react-native-firebase/auth';
+import { arrayRemove, doc, getDoc, getFirestore, updateDoc } from '@react-native-firebase/firestore';
+import React, { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Image,
+  StyleSheet,
   Text,
+  TouchableOpacity,
   View
 } from 'react-native';
 
-{/*}
 interface Friend {
   userId: string;
   username: string;
@@ -16,6 +22,7 @@ interface Friend {
 interface FriendshipData {
   friendsId?: string[]; // Make optional since it might not exist
 }
+
 interface UserData {
   username: string;
   email: string;
@@ -24,15 +31,14 @@ interface UserData {
 }
 
 const FriendsScreen: React.FC = () => {
-     const [friends, setFriends] = useState<Friend[]>([]);
+  const [friends, setFriends] = useState<Friend[]>([]);
   const [loading, setLoading] = useState(true);
   
   const auth = getAuth();
   const db = getFirestore();
-   const currentUser = auth.currentUser;
-  
+  const currentUser = auth.currentUser;
 
- useEffect(() => {
+  useEffect(() => {
     if (currentUser) {
       fetchFriends();
     }
@@ -43,72 +49,69 @@ const FriendsScreen: React.FC = () => {
       if (!currentUser) return;
 
       // Get current user's friendship document
-
-       const friendshipDoc = await getDoc(doc(db, 'friendships', currentUser.uid));
+      const friendshipDoc = await getDoc(doc(db, 'friendships', currentUser.uid));
     
-    if (!friendshipDoc.exists()) {
-      setLoading(false);
-      return;
-    }
+      if (!friendshipDoc.exists()) {
+        setLoading(false);
+        return;
+      }
 
-    const friendshipData = friendshipDoc.data() as FriendshipData; // Type assertion
-    const friendsIds = friendshipData?.friendsId || []; // Safe access with fallback
+      const friendshipData = friendshipDoc.data() as FriendshipData; // Type assertion
+      const friendsIds = friendshipData?.friendsId || []; // Safe access with fallback
       
- //   if (friendsIds.length === 0) {
-   //   setFriends([]);
-//      setLoading(false);
- //     return;
-//    }
+      if (friendsIds.length === 0) {
+        setFriends([]);
+        setLoading(false);
+        return;
+      }
 
-      
       // Fetch friend details from users collection
-  //    const friendsData: Friend[] = [];
-   //   for (const friendId of friendsIds) {
-  //      const userDoc = await getDoc(doc(db, 'users', friendId));
-  //      if (userDoc.exists()) {
-  //        const userData = userDoc.data();
-   //       friendsData.push({
-     //       userId: friendId,
-   //         username: userData.username,
-      //      email: userData.email,
-    //        profileImage: userData.profileImage,
-    //      });
-   //     }
-    //  }
-  //    
-
-   const friendsPromises = friendsIds.map(async (friendId) => {
-      try {
+      const friendsData: Friend[] = [];
+      for (const friendId of friendsIds) {
         const userDoc = await getDoc(doc(db, 'users', friendId));
-        if (!userDoc.exists()) {
-          console.warn(`Friend ${friendId} not found in users collection`);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          if (userData) {
+            friendsData.push({
+              userId: friendId,
+              username: userData.username,
+              email: userData.email,
+              profileImage: userData.profileImage,
+            });
+          }
+        }
+      }
+      
+      const friendsPromises = friendsIds.map(async (friendId) => {
+        try {
+          const userDoc = await getDoc(doc(db, 'users', friendId));
+          if (!userDoc.exists()) {
+            console.warn(`Friend ${friendId} not found in users collection`);
+            return null;
+          }
+
+          const userData = userDoc.data() as UserData;
+          return {
+            userId: friendId,
+            username: userData.username, // These are now guaranteed by UserData
+            email: userData.email,
+            profileImage: userData.profileImage
+          } as Friend;
+        } catch (error) {
+          console.error(`Error fetching friend ${friendId}:`, error);
           return null;
         }
+      });
 
-        const userData = userDoc.data() as UserData;
-        return {
-          userId: friendId,
-          username: userData.username, // These are now guaranteed by UserData
-          email: userData.email,
-          profileImage: userData.profileImage
-        } as Friend;
-      } catch (error) {
-        console.error(`Error fetching friend ${friendId}:`, error);
-        return null;
-      }
-    });
-
-    const friendsData = (await Promise.all(friendsPromises)).filter(Boolean) as Friend[];
-    setFriends(friendsData);
-
-  } catch (error) {
-    console.error('Error fetching friends:', error);
-    Alert.alert('Error', 'Failed to load friends');
-  } finally {
-    setLoading(false);
-  }
-};
-
+      const resolvedFriends = (await Promise.all(friendsPromises)).filter(Boolean) as Friend[];
+      setFriends(resolvedFriends);
+    } catch (error) {
+      console.error('Error fetching friends:', error);
+      Alert.alert('Error', 'Failed to load friends');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const deleteFriend = async (friendId: string, friendUsername: string) => {
     Alert.alert(
@@ -156,7 +159,7 @@ const FriendsScreen: React.FC = () => {
           source={
             item.profileImage
               ? { uri: item.profileImage }
-              : require('C:\Users\kuaga\OneDrive\Documents\GitHub\sigma\app\(auth)\friends\avatar.jpg') // Add default avatar
+              : require('./avatar.jpg') // Add default avatar
           }
           style={styles.profileImage}
         />
@@ -297,17 +300,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-*/}
-
-  
-  const FriendsScreen: React.FC = () => {
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Friends Paage</Text>
-        </View>
-    );
-};
-
-const usersCollection = firestore().collection('users');
 
 export default FriendsScreen;

@@ -2,23 +2,6 @@ import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
-{/*}
-import { getFirestore } from '@react-native-firebase/firestore';
-import { initializeApp, FirebaseAppOptions } from '@react-native-firebase/app';
-
-const firebaseConfig: FirebaseAppOptions = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-};
-
-const firebaseApp = initializeApp(firebaseConfig);
-const authInstance = auth(firebaseApp);
-const firestoreInstance = getFirestore(firebaseApp);
-*/}
 export default function RootLayout() {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();

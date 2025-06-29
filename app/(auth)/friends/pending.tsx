@@ -1,24 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
   ActivityIndicator,
-  Image
+  Alert,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
-import firestore, { 
-  getFirestore, 
-  doc, 
-  getDoc, 
-  updateDoc, 
-  arrayUnion, 
-  deleteField 
-} from '@react-native-firebase/firestore';
-import auth, { getAuth } from '@react-native-firebase/auth';
-/*
+ // No need for manual configuration with @react-native-firebase
+
 interface PendingRequest {
   id: string;
   senderId: string;
@@ -36,22 +30,22 @@ interface FriendshipData {
   }>;
 }
 
-const fetchPendingRequests = async () => {
+const fetchPendingRequests = async (currentUser: any, setLoading: (loading: boolean) => void, setPendingRequests: (requests: any[]) => void, db: any) => {
   try {
     if (!currentUser) return;
     setLoading(true);
 
     // 1. Get friendship document
-    const friendshipDoc = await getDoc(doc(db, 'friendships', currentUser.uid));
+    const friendshipDoc = await db.collection('friendships').doc(currentUser.uid).get();
     
-    if (!friendshipDoc.exists()) {
+    if (!friendshipDoc.exists) {
       setPendingRequests([]);
       return;
     }
 
     // 2. Process pending requests with type safety
     const friendshipData = friendshipDoc.data() as FriendshipData;
-    const pendingData = friendshipData?.pending || {};
+    const pendingData = friendshipData.pending || {};
 
     // 3. Convert to array and filter requests where current user is receiver
     const pendingRequests = await Promise.all(
@@ -59,7 +53,7 @@ const fetchPendingRequests = async () => {
         .filter(([_, request]) => request.receiverId === currentUser.uid && request.status === 'pending')
         .map(async ([requestId, request]) => {
           // 4. Fetch sender details
-          const senderDoc = await getDoc(doc(db, 'users', request.senderId));
+          const senderDoc = await db.collection('users').doc(request.senderId).get();
           const senderData = senderDoc.data();
           
           return {
@@ -86,9 +80,8 @@ const PendingScreen = () => {
   const [pendingRequests, setPendingRequests] = useState<PendingRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const auth = getAuth();
-  const db = getFirestore();
-  const currentUser = auth.currentUser;
+  const currentUser = auth().currentUser;
+  const db = firestore();
 
   useEffect(() => {
     if (currentUser) {
@@ -101,7 +94,7 @@ const PendingScreen = () => {
       if (!currentUser) return;
 
       // Get current user's friendship document
-      const friendshipDoc = await getDoc(doc(db, 'friendships', currentUser.uid));
+      const friendshipDoc = await db.collection('friendships').doc(currentUser.uid).get();
       
       if (!friendshipDoc.exists()) {
         setLoading(false);
@@ -109,7 +102,7 @@ const PendingScreen = () => {
       }
 
       const friendshipData = friendshipDoc.data();
-      const pendingData = friendshipData.pending || {};
+      const pendingData = friendshipData?.pending || {};
       
       // Filter for requests where current user is the receiver
       const pendingRequestsArray: PendingRequest[] = [];
@@ -118,16 +111,16 @@ const PendingScreen = () => {
         const data = requestData as any;
         if (data.receiverId === currentUser.uid && data.status === 'pending') {
           // Fetch sender details
-          const senderDoc = await getDoc(doc(db, 'users', data.senderId));
+          const senderDoc = await db.collection('users').doc(data.senderId).get();
           
           if (senderDoc.exists()) {
             const senderData = senderDoc.data();
             pendingRequestsArray.push({
               id: requestId,
               senderId: data.senderId,
-              senderName: senderData.username || 'Unknown User',
-              senderEmail: senderData.email || '',
-              senderProfileImage: senderData.profileImage,
+              senderName: senderData?.username || 'Unknown User',
+              senderEmail: senderData?.email || '',
+              senderProfileImage: senderData?.profileImage,
               status: 'pending'
             });
           }
@@ -148,21 +141,21 @@ const PendingScreen = () => {
       if (!currentUser) return;
       
       // Update current user's document
-      const currentUserRef = doc(db, 'friendships', currentUser.uid);
+      const currentUserRef = db.collection('friendships').doc(currentUser.uid);
       
       // Add sender to friends list
-      await updateDoc(currentUserRef, {
-        friendsId: arrayUnion(request.senderId),
-        [`pending.${request.id}`]: deleteField()
+      await currentUserRef.update({
+        friendsId: firestore.FieldValue.arrayUnion(request.senderId),
+        [`pending.${request.id}`]: firestore.FieldValue.delete()
       });
       
       // Update sender's document
-      const senderRef = doc(db, 'friendships', request.senderId);
+      const senderRef = db.collection('friendships').doc(request.senderId);
       
       // Add current user to sender's friends list
-      await updateDoc(senderRef, {
-        friendsId: arrayUnion(currentUser.uid),
-        [`pending.${request.id}`]: deleteField()
+      await senderRef.update({
+        friendsId: firestore.FieldValue.arrayUnion(currentUser.uid),
+        [`pending.${request.id}`]: firestore.FieldValue.delete()
       });
       
       // Update local state
@@ -182,15 +175,15 @@ const PendingScreen = () => {
       if (!currentUser) return;
       
       // Update current user's document to remove the pending request
-      const currentUserRef = doc(db, 'friendships', currentUser.uid);
-      await updateDoc(currentUserRef, {
-        [`pending.${request.id}`]: deleteField()
+      const currentUserRef = db.collection('friendships').doc(currentUser.uid);
+      await currentUserRef.update({
+        [`pending.${request.id}`]: firestore.FieldValue.delete()
       });
       
       // Update sender's document to remove the pending request
-      const senderRef = doc(db, 'friendships', request.senderId);
-      await updateDoc(senderRef, {
-        [`pending.${request.id}`]: deleteField()
+      const senderRef = db.collection('friendships').doc(request.senderId);
+      await senderRef.update({
+        [`pending.${request.id}`]: firestore.FieldValue.delete()
       });
       
       // Update local state
@@ -374,13 +367,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PendingScreen; */
-
-const PendingScreen = () => {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Pending Friend Requests</Text>
-    </View>
-  );
-};
 export default PendingScreen;
