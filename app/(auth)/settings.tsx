@@ -4,14 +4,14 @@ import storage from '@react-native-firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 const SettingsScreen = () => {
@@ -101,9 +101,21 @@ const SettingsScreen = () => {
       if (!currentUser) return;
       if (!usernameChanged) return;
 
-      await db.collection('users').doc(currentUser.uid).update({
-        username: username
-      });
+      const userRef = db.collection('users').doc(currentUser.uid);
+      const userDoc = await userRef.get();
+      
+      if (userDoc.exists()) {
+        await userRef.update({
+          username: username
+        });
+      } else {
+        await userRef.set({
+          userId: currentUser.uid,
+          email: currentUser.email || '',
+          username: username,
+          createdAt: firestore.FieldValue.serverTimestamp()
+        });
+      }
 
       setUsernameChanged(false);
       Alert.alert('Success', 'Username updated successfully');
